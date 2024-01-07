@@ -1,5 +1,10 @@
  /* Product Cards Styles */
 
+ .shop__title {
+    text-align: center;
+    margin-bottom: 1rem;
+ }
+
 .product-form {
     width: 20rem;
     max-width: 90%;
