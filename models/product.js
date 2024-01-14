@@ -31,6 +31,6 @@ module.exports = class Product {
         callBack([]);
       }
       callBack(JSON.parse(fileContent));
-    })
+    });
   }
 }
