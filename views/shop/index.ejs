@@ -3,7 +3,8 @@
 </head>
 
 <body>
-    <%- include('../includes/navigation.ejs'); %>
+    <%- include('../includes/navigation.ejs') %>
+
     <main>
         <% if (prods.length > 0) { %>
         <h1>All Products</h1>
@@ -18,8 +19,7 @@
                 </div>
                 <div class="card__content">
                     <h2 class="product__price">£<%= product.price %></h2>
-                    <p class="product__description"><%= product.description %>
-                    </p>
+                    <p class="product__description"><%= product.description %></p>
                 </div>
                 <div class="card__actions">
                     <button class="btn">Add to Cart</button>
@@ -31,4 +31,4 @@
         <h1>No Products Found!</h1>
         <% } %>
     </main>
-    <%- include('../includes/end.ejs'); %>
+    <%- include('../includes/end.ejs') %>

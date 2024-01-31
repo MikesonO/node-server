@@ -12,16 +12,22 @@
      margin: auto;
  }
 
+ main h1 {
+  margin-bottom: 2rem;
+ }
+
  .main-header {
      width: 100%;
      height: 3.5rem;
      background-color: #164863;
      padding: 0 1.5rem;
+     display: flex;
+     align-items: center;
  }
 
  .main-header__nav {
      height: 100%;
-     display: flex;
+     display: none;
      align-items: center;
  }
 
@@ -41,13 +47,94 @@
      color: #9BBEC8;
  }
 
- .main-header__item-list a:active {
-     color: #FFD369;
- }
-
+ .main-header__item-list a:active,
  .main-header__item-list a.active {
      color: #FFD369;
  }
+
+
+ .mobile-nav {
+  width: 30rem;
+  height: 100vh;
+  max-width: 90%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: white;
+  z-index: 10;
+  padding: 2rem 1rem 1rem 2rem;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-out;
+}
+
+.mobile-nav.open {
+  transform: translateX(0);
+}
+
+.mobile-nav__item-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+
+.mobile-nav__item {
+  margin: 1rem;
+  padding: 0;
+}
+
+.mobile-nav__item a {
+  text-decoration: none;
+  color: black;
+  font-size: 1.5rem;
+  padding: 0.5rem 2rem;
+  border-radius: 3px;
+  transition: background-color 0.3s ease;
+}
+
+.mobile-nav__item a:active,
+.mobile-nav__item a.active,
+.mobile-nav__item a.active:hover {
+  background: #164863;
+  color: white;
+}
+
+.mobile-nav__item a:hover{
+  color: white;
+  background-color: #9BBEC8;
+}
+
+#side-menu-toggle {
+  border: 1px solid white;
+  font: inherit;
+  padding: 0.5rem;
+  display: block;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+}
+
+#side-menu-toggle:focus {
+  outline: none;
+}
+
+#side-menu-toggle:active,
+#side-menu-toggle:hover {
+  color: #FFD369;
+  border-color: #FFD369;
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 5;
+  display: none;
+}
 
  .grid {
      display: flex;
@@ -106,3 +193,14 @@
  button:active {
      background-color: #427D9D;
  }
+
+ 
+@media (min-width: 768px) {
+  .main-header__nav {
+    display: flex;
+  }
+
+  #side-menu-toggle {
+    display: none;
+  }
+}
