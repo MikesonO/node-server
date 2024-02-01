@@ -1,7 +1,6 @@
 const fs = require('fs');
 
 const requestHandler = (req, res) => {
-    // console.log(req.url, req.method, req.headers);
     const url = req.url;
     const method = req.method;
 
@@ -17,7 +16,6 @@ const requestHandler = (req, res) => {
         const body = [];
         // req.on('data') is an eventListner for when data is received.
         req.on('data', (chunk) => {
-            console.log(chunk);
             body.push(chunk)
         });
 
