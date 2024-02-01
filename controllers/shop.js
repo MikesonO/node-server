@@ -63,6 +63,13 @@ exports.postCart = (req, res, next) => {
     res.redirect('/cart');
 };
 
+exports.postCartDeleteProduct = (req, res, next) => {
+    const prodId = req.body.productId;
+    Product.fetchProduct(prodId, product => {
+        Cart.deleteProduct(prodId, product.price);
+        res.redirect('/cart');
+    });
+};
 
 exports.getCheckout = (req, res, next) => {
     Product.fetchAll((products) => {
