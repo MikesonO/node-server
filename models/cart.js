@@ -29,13 +29,13 @@ module.exports = class Cart {
         updatedProduct = {
           ...existingProduct
         };
-        updatedProduct.qty = updatedProduct.qty + 1;
+        updatedProduct.quantity = updatedProduct.quantity + 1;
         cart.products = [...cart.products];
         cart.products[existingProductIndex] = updatedProduct;
       } else {
         updatedProduct = {
           id: id,
-          qty: 1
+          quantity: 1
         };
         cart.products = [...cart.products, updatedProduct];
       }
@@ -63,6 +63,19 @@ module.exports = class Cart {
       fs.writeFile(p, JSON.stringify(updatedCart), err => {
         console.log(err);
       });
+
+    });
+  }
+
+  static getProducts(callBack) {
+    fs.readFile(p, (err, fileContent) => {
+
+      const cart = JSON.parse(fileContent);
+      if (err) {
+        callBack(null);
+      } else {
+        callBack(cart);
+      }
 
     });
   }
