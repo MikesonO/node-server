@@ -17,6 +17,7 @@
     "ejs": "^3.1.9",
     "express-handlebars": "3.0",
     "express.js": "^1.0.0",
+    "mysql2": "^3.9.1",
     "pug": "^3.0.2"
   }
 }
