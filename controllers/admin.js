@@ -1,4 +1,7 @@
+const mongodb = require('mongodb');
 const Product = require('../models/product');
+
+const ObjectId = mongodb.ObjectId;
 
 exports.getAddProduct = (req, res, next) => {
     res.render('admin/edit-product', {
@@ -25,36 +28,50 @@ exports.postAddProduct = (req, res, next) => {
         });
 };
 
-// exports.getEditProduct = (req, res, next) => {
-//     const editMode = req.query.edit;
-//     if (!editMode) {
-//         console.log(editMode);
-//         return res.redirect('/');
-//     }
-//     const prodId = req.params.productId;
-//     Product.fetchProduct(prodId, product => {
-//         if (!product) {
-//             return res.redirect('/');
-//         }
-//         res.render('admin/edit-product', {
-//             path: '/admin/edit-product',
-//             pageTitle: 'Edit Product',
-//             editing: editMode,
-//             product: product
-//         });
-//     });
-// };
+exports.getEditProduct = (req, res, next) => {
+    const editMode = req.query.edit;
+    if (!editMode) {
+        return res.redirect('/');
+    }
+    const prodId = req.params.productId;
+    Product.fetchById(prodId)
+        .then(product => {
+            if (!product) {
+                return res.redirect('/');
+            }
+            res.render('admin/edit-product', {
+                path: '/admin/edit-product',
+                pageTitle: 'Edit Product',
+                editing: editMode,
+                product: product
+            });
 
-// exports.postEditProduct = (req, res, next) => {
-//     const prodId = req.body.productId;
-//     const updatedTitle = req.body.title;
-//     const updatedImageUrl = req.body.imageUrl;
-//     const updatedPrice = req.body.price;
-//     const updatedDescription = req.body.description;
-//     const updatedProduct = new Product(prodId, updatedTitle, updatedImageUrl, updatedPrice, updatedDescription);
-//     updatedProduct.saveProduct();
-//     res.redirect('/admin/product-list')
-// };
+        }).catch(err => console.log(err));
+};
+
+exports.postEditProduct = (req, res, next) => {
+    const prodId = req.body.productId;
+
+    const updatedTitle = req.body.title;
+    const updatedImageUrl = req.body.imageUrl;
+    const updatedPrice = req.body.price;
+    const updatedDesc = req.body.description;
+
+    const product = new Product(
+        updatedTitle,
+        updatedImageUrl,
+        updatedPrice,
+        updatedDesc,
+        new ObjectId(prodId)
+    );
+    product
+        .save()
+        .then(result => {
+            console.log('UPDATED PRODUCT!');
+            res.redirect('/admin/products');
+        })
+        .catch(err => console.log(err));
+};
 
 
 exports.getProducts = (req, res, next) => {
