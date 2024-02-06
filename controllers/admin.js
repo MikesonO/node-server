@@ -56,19 +56,20 @@ exports.postAddProduct = (req, res, next) => {
 //     res.redirect('/admin/product-list')
 // };
 
-// exports.getProducts = (req, res, next) => {
-//     Product.fetchAll((products) => {
-//         res.render('admin/product-list', {
-//             path: '/admin/product-list',
-//             pageTitle: 'Admin Products',
-//             prods: products
-//         });
-//     });
-// };
+
+exports.getProducts = (req, res, next) => {
+    Product.fetchAll()
+        .then(products => {
+            res.render('admin/product-list', {
+                path: '/admin/product-list',
+                pageTitle: 'Admin Products',
+                prods: products
+            })
+        }).catch(err => console.log(err));
+};
 
 // exports.postDeleteProduct = (req, res, next) => {
 //     const prodId = req.body.productId;
 //     Product.deleteProduct(prodId);
 //     res.redirect('/admin/product-list');
 // }
-
