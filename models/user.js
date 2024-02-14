@@ -71,13 +71,40 @@ class User {
 
         return db
             .collection('products')
-            .find({ _id: { $in: productIds } })
+            .find({
+                _id: {
+                    $in: productIds
+                }
+            })
             .toArray()
             .then((products) => {
                 return products.map((p) => {
-                    return { ...p, quantity: quantities[p._id] };
+                    return {
+                        ...p,
+                        quantity: quantities[p._id]
+                    };
                 });
             });
+    }
+
+    deleteFromCart(productId) {
+        const updatedCartItems = this.cart.items.filter(item => {
+            return item.productId.toString() !== productId.toString();
+        });
+
+        console.log(updatedCartItems);
+
+        const db = getDb();
+        return db
+            .collection('users')
+            .updateOne({
+                _id: new ObjectId(this._id)
+            }, {
+                $set: {
+                    cart: { items: updatedCartItems }
+                }
+            });
+
     }
 
     static findById(userId) {
