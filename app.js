@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const errorControllers = require('./controllers/errors.js');
-const User = require('./models/user.js');
+// const User = require('./models/user.js');
 
 const app = express();
 
@@ -20,14 +20,14 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use((req, res, next) => {
-    User.findById('65c2664413fae1e5fd8a601b')
-        .then(user => {
-            req.user = new User(user.name, user.email, user.cart, user._id);
-            next();
-        })
-        .catch(err => console.log(err));
-});
+// app.use((req, res, next) => {
+//     User.findById('65c2664413fae1e5fd8a601b')
+//         .then(user => {
+//             req.user = new User(user.name, user.email, user.cart, user._id);
+//             next();
+//         })
+//         .catch(err => console.log(err));
+// });
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
@@ -35,7 +35,7 @@ app.use(shopRoutes);
 
 app.use(errorControllers.get404);
 
-mongoose.connect('mongodb+srv://Mike:T0wtSsPws1dOPuFL@cluster.8oboqne.mongodb.net/')
+mongoose.connect('mongodb+srv://Mike:T0wtSsPws1dOPuFL@cluster.8oboqne.mongodb.net/shop?retryWrites=true')
     .then(results => {
         app.listen(3000);
     })
