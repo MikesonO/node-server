@@ -2,9 +2,9 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const errorControllers = require('./controllers/errors.js');
-const mongoConnect = require('./util/database').mongoConnect;
 const User = require('./models/user.js');
 
 const app = express();
@@ -35,8 +35,10 @@ app.use(shopRoutes);
 
 app.use(errorControllers.get404);
 
-
-mongoConnect(() => {
-    app.listen(3000);
-});
-
+mongoose.connect('mongodb+srv://Mike:T0wtSsPws1dOPuFL@cluster.8oboqne.mongodb.net/')
+    .then(results => {
+        app.listen(3000);
+    })
+    .catch(err => {
+        console.log(err);
+    });
