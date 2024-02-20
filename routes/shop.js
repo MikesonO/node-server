@@ -13,11 +13,11 @@ router.get('/products', shopController.getProducts);
 // : tells EJS that path will contain an integer
 router.get('/products/:productId', shopController.getProduct);
 
-// // // Cart Page | /cart => GET
-// router.get('/cart', shopController.getCart);
+// Cart Page | /cart => GET
+router.get('/cart', shopController.getCart);
 
-// // // Cart Page | /cart => POST
-// router.post('/cart', shopController.postCart);
+// Cart Page | /cart => POST
+router.post('/cart', shopController.postCart);
 
 // // // Cart Page | /cart-delete-item => POST
 // router.post('/cart-delete-item', shopController.postCartDeleteProduct);
