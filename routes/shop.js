@@ -3,11 +3,11 @@ const express = require('express');
 const shopController = require('../controllers/shop');
 const router = express.Router();
 
-// // Homepage | / => GET
-// router.get('/', shopController.getIndex);
+// Homepage | / => GET
+router.get('/', shopController.getIndex);
 
-// // Products Page | /products => GET
-// router.get('/products', shopController.getProducts);
+// Products Page | /products => GET
+router.get('/products', shopController.getProducts);
 
 // // Products Detail | /products/12345 => GET 
 // // : tells EJS that path will contain an integer
