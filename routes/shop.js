@@ -19,8 +19,8 @@ router.get('/cart', shopController.getCart);
 // Cart Page | /cart => POST
 router.post('/cart', shopController.postCart);
 
-// // // Cart Page | /cart-delete-item => POST
-// router.post('/cart-delete-item', shopController.postCartDeleteProduct);
+// Cart Page | /cart-delete-item => POST
+router.post('/cart-delete-item', shopController.postCartDeleteProduct);
 
 // // // Orders Page | /orders => POST
 // router.post('/create-order', shopController.postOrder);
