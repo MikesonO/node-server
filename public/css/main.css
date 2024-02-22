@@ -44,17 +44,27 @@
  }
 
 
- .main-header__item-list a {
+ .main-header__item-list a,
+ .main-header__item-list button {
    text-decoration: none;
    color: #DDF2FD;
  }
 
- .main-header__item-list a:hover {
+ .main-header__item-list button {
+   background-color: transparent;
+   border: none;
+   font-size: inherit;
+   cursor: pointer;
+ }
+
+ .main-header__item-list a:hover,
+ .main-header__item-list button:hover {
    color: #9BBEC8;
  }
 
  .main-header__item-list a:active,
- .main-header__item-list a.active {
+ .main-header__item-list a.active,
+ .main-header__item-list button:active {
    color: #FFD369;
  }
 
