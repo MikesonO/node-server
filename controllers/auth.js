@@ -1,17 +1,19 @@
 exports.getLogin = (req, res, next) => {
-    const cookies = req.get('Cookie');
-    const isLoggedInCookie = cookies ? cookies.split('; ').find(cookie => cookie.includes('isLoggedIn')) : null;
-    const isLoggedIn = isLoggedInCookie ? isLoggedInCookie.split('=')[1] === 'true' : false;
+    // const cookies = req.get('Cookie');
+    // const isLoggedInCookie = cookies ? cookies.split('; ').find(cookie => cookie.includes('isLoggedIn')) : null;
+    // const isLoggedIn = isLoggedInCookie ? isLoggedInCookie.split('=')[1] === 'true' : false;
+
+    console.log(req.session.isLoggedIn)
 
     res.render('auth/login', {
         path: '/login',
         pageTitle: 'Login',
-        isAuthenticated: isLoggedIn
+        isAuthenticated: false
     });
 };
 
 
 exports.postLogin = (req, res, next) => {
-    res.setHeader('Set-Cookie', 'isLoggedIn=true');
+    req.session.isLoggedIn = true;
     res.redirect('/');
 };
