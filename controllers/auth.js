@@ -8,6 +8,23 @@ exports.getLogin = (req, res, next) => {
     });
 };
 
+exports.getSignup = (req, res, next) => {
+    res.render('auth/signup', {
+        path: '/signup',
+        pageTitle: 'Signup',
+        isAuthenticated: false
+    });
+};
+
+
+exports.getLogin = (req, res, next) => {
+    res.render('auth/login', {
+        path: '/login',
+        pageTitle: 'Login',
+        isAuthenticated: false
+    });
+};
+
 exports.postLogin = (req, res, next) => {
     User.findById('65d4ca5d060e0df0af6dfb79')
         .then(user => {
