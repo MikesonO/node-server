@@ -54,21 +54,7 @@ app.use(authRoutes);
 app.use(errorControllers.get404);
 
 mongoose.connect(MONGODB_URI)
-    .then(results => {
-        // If there are no users - create a new one
-        User.findOne().then(user => {
-            if (!user) {
-                const user = new User({
-                    name: 'Mike',
-                    email: 'mike@test.com',
-                    cart: {
-                        items: []
-                    }
-                });
-                user.save();
-            }
-        });
-
+    .then(result => {
         app.listen(3000);
     })
     .catch(err => {

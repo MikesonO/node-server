@@ -16,15 +16,6 @@ exports.getSignup = (req, res, next) => {
     });
 };
 
-
-exports.getLogin = (req, res, next) => {
-    res.render('auth/login', {
-        path: '/login',
-        pageTitle: 'Login',
-        isAuthenticated: false
-    });
-};
-
 exports.postLogin = (req, res, next) => {
     User.findById('65d4ca5d060e0df0af6dfb79')
         .then(user => {
@@ -36,6 +27,35 @@ exports.postLogin = (req, res, next) => {
             });
         })
         .catch(err => console.log(err));
+};
+
+exports.postSignup = (req, res, next) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    const confirmPassword = req.body.confirmPassword;
+
+    User.findOne({ email: email })
+
+        .then(userDoc => {
+            if (userDoc) {
+                return res.redirect('/signup');
+            }
+            const user = new User({
+                email: email,
+                password: password,
+                cart: { items: [] }
+            });
+            return user.save();
+        })
+
+        // After user has been created / saved - redirect to login page
+        .then(result => {
+            res.redirect('/login');
+        })
+
+        .catch(err => {
+            console.log(err);
+        });
 };
 
 exports.postLogout = (req, res, next) => {
