@@ -1,6 +1,13 @@
 const bcrypt = require('bcryptjs');
+const { MailtrapClient } = require("mailtrap");
 
 const User = require('../models/user');
+
+// MailTrap API
+const TOKEN = "c181aed16a2b15208b679cc29388ed51";
+const ENDPOINT = "https://send.api.mailtrap.io/";
+
+const client = new MailtrapClient({ endpoint: ENDPOINT, token: TOKEN });
 
 exports.getLogin = (req, res, next) => {
     let message = req.flash('error');
@@ -34,7 +41,9 @@ exports.postLogin = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
 
-    User.findOne({ email: email })
+    User.findOne({
+        email: email
+    })
         .then(user => {
             if (!user) {
                 req.flash('error', 'Invalid email or password.');
@@ -66,7 +75,9 @@ exports.postSignup = (req, res, next) => {
     const password = req.body.password;
     const confirmPassword = req.body.confirmPassword;
 
-    User.findOne({ email: email })
+    User.findOne({
+        email: email
+    })
         .then(userDoc => {
             if (userDoc) {
                 req.flash('error', 'Oops! Email exists. Please log in or use a different one.');
@@ -78,15 +89,28 @@ exports.postSignup = (req, res, next) => {
                     const user = new User({
                         email: email,
                         password: hashedPassword,
-                        cart: { items: [] }
+                        cart: {
+                            items: []
+                        }
                     });
                     return user.save();
                 })
                 .then(result => {
                     res.redirect('/login');
+                    if (email === 'mikeson.jnr@gmail.com') {
+                        return client.send({
+                            from: { email: 'shop@demomailtrap.com' },
+                            to: [{ email: email }],
+                            subject: 'Signup suceeded!',
+                            text: 'You successfully signed up!'
+                        });
+                    }
+                    return console.log('Signup successful!');
+                })
+                .catch(err => {
+                    console.log(err);
                 });
         })
-
         .catch(err => {
             console.log(err);
         });
