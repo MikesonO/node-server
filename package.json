@@ -25,7 +25,6 @@
     "mailtrap": "^3.3.0",
     "mongodb": "^6.3.0",
     "mongoose": "^8.1.2",
-    "nodemailer": "^6.9.13",
     "pug": "^3.0.2"
   }
 }
