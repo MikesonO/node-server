@@ -68,6 +68,9 @@
    color: #FFD369;
  }
 
+ .center {
+  text-align: center;
+ }
 
  .mobile-nav {
    width: 30rem;
