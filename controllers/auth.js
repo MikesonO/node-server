@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const { MailtrapClient } = require("mailtrap");
 
 const User = require('../models/user');
+const { reset } = require('nodemon');
 
 // MailTrap API
 const TOKEN = "c181aed16a2b15208b679cc29388ed51";
@@ -10,27 +11,31 @@ const ENDPOINT = "https://send.api.mailtrap.io/";
 
 const client = new MailtrapClient({ endpoint: ENDPOINT, token: TOKEN });
 
-exports.getLogin = (req, res, next) => {
-    let message = req.flash('error');
+
+const getFlashMessage = (message) => {
     if (message.length > 0) {
-        message = message[0];
+        return message = message[0];
     } else {
-        message = null;
+        return message = null;
     }
+}
+
+exports.getLogin = (req, res, next) => {
+
+    let successMsg = getFlashMessage(req.flash('success'));
+    let errorMsg = getFlashMessage(req.flash('error'));
+
     res.render('auth/login', {
         path: '/login',
         pageTitle: 'Login',
-        errorMessage: message
+        successMessage: successMsg,
+        errorMessage: errorMsg
     });
 };
 
 exports.getSignup = (req, res, next) => {
-    let message = req.flash('error');
-    if (message.length > 0) {
-        message = message[0];
-    } else {
-        message = null;
-    }
+    let message = getFlashMessage(req.flash('error'));
+
     res.render('auth/signup', {
         path: '/signup',
         pageTitle: 'Signup',
@@ -126,12 +131,7 @@ exports.postLogout = (req, res, next) => {
 
 exports.getResetPassword = (req, res, next) => {
 
-    let message = req.flash('error');
-    if (message.length > 0) {
-        message = message[0];
-    } else {
-        message = null;
-    }
+    let message = getFlashMessage(req.flash('error'));
 
     res.render('auth/reset-password', {
         path: '/reset-password',
@@ -188,18 +188,14 @@ exports.getNewPassword = (req, res, next) => {
     User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })
         .then(user => {
 
-            let message = req.flash('error');
-            if (message.length > 0) {
-                message = message[0];
-            } else {
-                message = null;
-            }
+            let message = getFlashMessage(req.flash('error'));
 
             res.render('auth/new-password', {
                 path: '/new-password',
                 pageTitle: 'New Password',
                 errorMessage: message,
-                userId: user._id.toString()
+                userId: user._id.toString(),
+                passwordToken: token
             });
 
         })
@@ -210,5 +206,30 @@ exports.getNewPassword = (req, res, next) => {
 
 }
 
-exports.postNewPassword = (req, res, next) => { }
+exports.postNewPassword = (req, res, next) => {
+    const newPassword = req.body.password;
+    const userId = req.body.userId;
+    const passwordToken = req.body.passwordToken;
+    let resetUser;
+
+    User.findOne({ resetToken: passwordToken, resetTokenExpiration: { $gt: Date.now() }, _id: userId })
+        .then(user => {
+            resetUser = user;
+            return bcrypt.hash(newPassword, 12);
+        })
+        .then(hashedPassword => {
+            resetUser.password = hashedPassword;
+            resetUser.resetToken = undefined;
+            resetUser.resetTokenExpiration = undefined;
+
+            return resetUser.save();
+        })
+        .then(result => {
+            req.flash('success', 'Password successfully changed.');
+            return res.redirect('/login');
+        })
+        .catch(err => {
+            console.log(err);
+        })
+};
 
