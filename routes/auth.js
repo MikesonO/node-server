@@ -15,10 +15,12 @@ router.post(
     [
         body('email')
             .isEmail()
-            .withMessage('Please enter a valid email address.'),
+            .withMessage('Please enter a valid email address.')
+            .normalizeEmail(),
         body('password', 'Password has to be valid.')
             .isLength({ min: 5 })
             .isAlphanumeric()
+            .trim()
     ],
     authController.postLogin
 );
@@ -35,13 +37,16 @@ router.post('/signup',
                             return Promise.reject('Oops! Email exists. Please log in or use a different one.');
                         }
                     });
-            }),
+            })
+            .normalizeEmail(),
 
         body('password', 'Please enter a password with only numbers and text and at least 5 characters.')
             .isLength({ min: 5 })
-            .isAlphanumeric(),
+            .isAlphanumeric()
+            .trim(),
 
         body('confirmPassword')
+            .trim()
             .custom((value, { req }) => {
                 if (value !== req.body.password) {
                     throw new Error('Passwords have to match!');
