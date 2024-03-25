@@ -80,7 +80,6 @@ exports.postLogin = (req, res, next) => {
 exports.postSignup = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
-    const confirmPassword = req.body.confirmPassword;
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -92,41 +91,30 @@ exports.postSignup = (req, res, next) => {
         });
     }
 
-    User.findOne({
-        email: email
-    })
-        .then(userDoc => {
-            if (userDoc) {
-                req.flash('error', 'Oops! Email exists. Please log in or use a different one.');
-                return res.redirect('/signup');
-            }
-            return bcrypt
-                .hash(password, 12)
-                .then(hashedPassword => {
-                    const user = new User({
-                        email: email,
-                        password: hashedPassword,
-                        cart: {
-                            items: []
-                        }
-                    });
-                    return user.save();
-                })
-                .then(result => {
-                    res.redirect('/login');
-                    if (email === 'mikeson.jnr@gmail.com') {
-                        return client.send({
-                            from: { email: 'shop@demomailtrap.com' },
-                            to: [{ email: email }],
-                            subject: 'Signup suceeded!',
-                            text: 'You successfully signed up!'
-                        });
-                    }
-                    return console.log('Signup successful!');
-                })
-                .catch(err => {
-                    console.log(err);
+
+    return bcrypt
+        .hash(password, 12)
+        .then(hashedPassword => {
+            const user = new User({
+                email: email,
+                password: hashedPassword,
+                cart: {
+                    items: []
+                }
+            });
+            return user.save();
+        })
+        .then(result => {
+            res.redirect('/login');
+            if (email === 'mikeson.jnr@gmail.com') {
+                return client.send({
+                    from: { email: 'shop@demomailtrap.com' },
+                    to: [{ email: email }],
+                    subject: 'Signup suceeded!',
+                    text: 'You successfully signed up!'
                 });
+            }
+            return console.log('Signup successful!');
         })
         .catch(err => {
             console.log(err);
