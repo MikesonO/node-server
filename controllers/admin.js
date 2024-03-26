@@ -55,7 +55,9 @@ exports.postAddProduct = (req, res, next) => {
             res.redirect('/admin/add-product');
         })
         .catch(err => {
-            console.log(err);
+            const error = new Error('Creating a product failed.')
+            error.httpStatusCode = 500;
+            return next(error);
         });
 };
 
@@ -80,7 +82,11 @@ exports.getEditProduct = (req, res, next) => {
                 validationErrors: []
             });
 
-        }).catch(err => console.log(err));
+        }).catch(err => {
+            const error = new Error('Editing a product failed.')
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };
 
 exports.postEditProduct = (req, res, next) => {
