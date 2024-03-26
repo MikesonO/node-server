@@ -55,7 +55,7 @@ exports.postAddProduct = (req, res, next) => {
             res.redirect('/admin/add-product');
         })
         .catch(err => {
-            const error = new Error('Creating a product failed.')
+            const error = new Error('Post Add Product failed.')
             error.httpStatusCode = 500;
             return next(error);
         });
@@ -83,7 +83,7 @@ exports.getEditProduct = (req, res, next) => {
             });
 
         }).catch(err => {
-            const error = new Error('Editing a product failed.')
+            const error = new Error('Get Edit Product failed.')
             error.httpStatusCode = 500;
             return next(error);
         });
@@ -134,7 +134,11 @@ exports.postEditProduct = (req, res, next) => {
                     res.redirect('/admin/product-list');
                 })
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            const error = new Error('Post Edit Product failed.')
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };
 
 
@@ -146,7 +150,12 @@ exports.getProducts = (req, res, next) => {
                 pageTitle: 'Admin Products',
                 prods: products
             })
-        }).catch(err => console.log(err));
+        })
+        .catch(err => {
+            const error = new Error('Get Products failed.')
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };
 
 exports.postDeleteProduct = (req, res, next) => {
@@ -155,5 +164,9 @@ exports.postDeleteProduct = (req, res, next) => {
         .then(() => {
             res.redirect('/admin/product-list');
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            const error = new Error('Post Delete Product failed.')
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };

@@ -114,7 +114,11 @@ exports.postLogin = (req, res, next) => {
                     res.redirect('/login');
                 });
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            const error = new Error('Post Login failed.')
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };
 
 
@@ -162,7 +166,9 @@ exports.postSignup = (req, res, next) => {
             return console.log('Signup successful!');
         })
         .catch(err => {
-            console.log(err);
+            const error = new Error('Post Signup failed.')
+            error.httpStatusCode = 500;
+            return next(error);
         });
 };
 
@@ -218,8 +224,10 @@ exports.postResetPassword = (req, res, next) => {
 
             })
             .catch(err => {
-                console.log(err);
-            })
+                const error = new Error('Post Reset Password failed.')
+                error.httpStatusCode = 500;
+                return next(error);
+            });
 
     })
 };
@@ -244,8 +252,10 @@ exports.getNewPassword = (req, res, next) => {
 
         })
         .catch(err => {
-            console.log(err);
-        })
+            const error = new Error('Get New Password failed.')
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 
 
 }
@@ -273,7 +283,9 @@ exports.postNewPassword = (req, res, next) => {
             return res.redirect('/login');
         })
         .catch(err => {
-            console.log(err);
-        })
+            const error = new Error('Post New Password failed.')
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };
 
