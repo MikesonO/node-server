@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const PDFDocument = require('pdfkit');
 
 const Product = require('../models/product');
 const Order = require('../models/order');
@@ -158,7 +159,38 @@ exports.getInvoice = (req, res, next) => {
                 return next(new Error('Unauthorized.'));
             }
             const invoiceName = `invoice-${orderId}.pdf`;
-            const invoicePath = path.join('data', 'invoices', invoiceName)
+            const invoicePath = path.join('data', 'invoices', invoiceName);
+
+            const pdfDoc = new PDFDocument();
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"');
+            pdfDoc.pipe(fs.createWriteStream(invoicePath));
+            pdfDoc.pipe(res);
+
+            pdfDoc.fontSize(26).lineGap(5).text('Invoice', {
+                underline: true
+            });
+
+            pdfDoc.moveDown(1);
+
+            let totalPrice = 0;
+            // Display product, quantity and price
+            order.products.forEach(prod => {
+                totalPrice = totalPrice + prod.quantity * prod.product.price; // Calculate sum for PDF
+                pdfDoc.fontSize(14).text(`${prod.product.title} - ${prod.quantity} x £${prod.product.price}`);
+            });
+
+            pdfDoc.moveDown(2);
+
+            // Display total sum
+            pdfDoc.fontSize(15).font('Helvetica-Bold').text(`Total Price: £${totalPrice}`, {
+
+                align: "right"
+            });
+
+
+
+            pdfDoc.end();
             // fs.readFile(invoicePath, (err, data) => {
             //     if (err) {
             //         return next(err);
@@ -169,11 +201,6 @@ exports.getInvoice = (req, res, next) => {
             //     res.send(data);
             //     res.end();
             // });
-            const file = fs.createReadStream(invoicePath);
-            res.setHeader('Content-Type', 'application/pdf');
-            res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"');
-            file.pipe(res)
-
         })
         .catch(err => next(err))
 };
