@@ -22,10 +22,12 @@ exports.postAddProduct = (req, res, next) => {
     const description = req.body.description;
     const errors = validationResult(req);
 
-    if (image) {
+    console.log(image);
+
+    if (!image) {
         return res.status(422).render('admin/edit-product', {
-            path: '/admin/edit-product',
             pageTitle: 'Add Product',
+            path: '/admin/add-product',
             editing: false,
             hasError: true,
             product: {
@@ -34,20 +36,20 @@ exports.postAddProduct = (req, res, next) => {
                 description: description
             },
             errorMessage: 'Attached file is not an image.',
-            validationErrors: errors.array()
+            validationErrors: []
         });
     }
 
     if (!errors.isEmpty()) {
-        console.log("hasError = true")
+        console.log(errors.array());
         return res.status(422).render('admin/edit-product', {
-            path: '/admin/edit-product',
             pageTitle: 'Add Product',
+            path: '/admin/add-product',
             editing: false,
             hasError: true,
             product: {
                 title: title,
-                image: image,
+                imageUrl: imageUrl,
                 price: price,
                 description: description
             },
@@ -69,7 +71,7 @@ exports.postAddProduct = (req, res, next) => {
         .then(result => {
             console.log(result);
             console.log('Created Product');
-            res.redirect('/admin/add-product');
+            res.redirect('/admin/product-list');
         })
         .catch(err => {
             const error = new Error('Post Add Product failed.')
@@ -110,7 +112,7 @@ exports.postEditProduct = (req, res, next) => {
     const prodId = req.body.productId;
 
     const updatedTitle = req.body.title;
-    const updatedImageUrl = req.body.imageUrl;
+    const image = req.file;
     const updatedPrice = req.body.price;
     const updatedDesc = req.body.description;
 
@@ -124,7 +126,6 @@ exports.postEditProduct = (req, res, next) => {
             hasError: true,
             product: {
                 title: updatedTitle,
-                imageUrl: updatedImageUrl,
                 price: updatedPrice,
                 description: updatedDesc,
                 _id: prodId
@@ -141,7 +142,9 @@ exports.postEditProduct = (req, res, next) => {
             }
 
             product.title = updatedTitle;
-            product.imageUrl = updatedImageUrl;
+            if (image) {
+                product.imageUrl = image.path;
+            }
             product.price = updatedPrice;
             product.description = updatedDesc;
 

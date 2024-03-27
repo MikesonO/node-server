@@ -8,6 +8,7 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const csurf = require('csurf');
 const flash = require('connect-flash');
 const multer = require('multer');
+const { v4: uuidv4 } = require('uuid');
 
 const errorControllers = require('./controllers/errors.js');
 const User = require('./models/user.js');
@@ -28,7 +29,7 @@ const fileStorage = multer.diskStorage({
         cb(null, 'images')
     },
     filename: (req, file, cb) => {
-        cb(null, `${new Date().toISOString()}-${file.originalname}`);
+        cb(null, `${uuidv4()}-${file.originalname}`);
     }
 });
 
@@ -100,8 +101,7 @@ app.use((error, req, res, next) => {
         path: '/500',
         isAuthenticated: req.session.isLoggedIn
     });
-})
-
+});
 
 mongoose.connect(MONGODB_URI)
     .then(result => {
