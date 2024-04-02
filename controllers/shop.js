@@ -4,6 +4,7 @@ const PDFDocument = require('pdfkit');
 
 const Product = require('../models/product');
 const Order = require('../models/order');
+const product = require('../models/product');
 
 
 const ITEMS_PER_PAGE = 3;
@@ -133,6 +134,32 @@ exports.postCartDeleteProduct = (req, res, next) => {
         });
 };
 
+exports.getCheckout = (req, res, next) => {
+    req.user
+        .populate('cart.items.productId')
+        .then(user => {
+            const products = user.cart.items;
+            let total = 0;
+
+            products.forEach(product => {
+                total += product.quantity * product.productId.price;
+            });
+
+            res.render('shop/checkout', {
+                path: '/checkout',
+                pageTitle: 'Checkout',
+                products: products,
+                totalSum: total
+            });
+        })
+        .catch(err => {
+            const error = new Error('Get Cart failed.')
+            error.httpStatusCode = 500;
+            return next(error);
+        });
+}
+
+
 exports.postOrder = (req, res, next) => {
     req.user
         .populate('cart.items.productId')
@@ -140,7 +167,9 @@ exports.postOrder = (req, res, next) => {
             const products = user.cart.items.map(prod => {
                 return {
                     quantity: prod.quantity,
-                    product: { ...prod.productId._doc }
+                    product: {
+                        ...prod.productId._doc
+                    }
                 }
             });
             const order = new Order({
@@ -166,7 +195,9 @@ exports.postOrder = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-    Order.find({ 'user.userId': req.user._id })
+    Order.find({
+        'user.userId': req.user._id
+    })
         .then(orders => {
             res.render('shop/orders', {
                 path: '/orders',

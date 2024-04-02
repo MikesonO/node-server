@@ -16,7 +16,8 @@
    margin-bottom: 2rem;
  }
 
- main.centered {
+ main.centered,
+ div.centered {
    text-align: center;
  }
 
@@ -69,7 +70,7 @@
  }
 
  .center {
-  text-align: center;
+   text-align: center;
  }
 
  .mobile-nav {
@@ -234,25 +235,25 @@
    background: #BB2525BF;
  }
 
-.pagination {
-  margin-top: 3rem;
-  text-align: center;
-}
+ .pagination {
+   margin-top: 3rem;
+   text-align: center;
+ }
 
-.pagination a {
-  text-decoration: none;
-  color: #427D9D;
-  padding: 0.5rem;
-  border: 1px solid #427D9D;
-  margin: 0 1rem;
-}
+ .pagination a {
+   text-decoration: none;
+   color: #427D9D;
+   padding: 0.5rem;
+   border: 1px solid #427D9D;
+   margin: 0 1rem;
+ }
 
-.pagination a:hover,
-.pagination a:active,
-.pagination a.active {
-  color: #FFFFFF;
-  background-color: #427D9D;
-}
+ .pagination a:hover,
+ .pagination a:active,
+ .pagination a.active {
+   color: #FFFFFF;
+   background-color: #427D9D;
+ }
 
  @media (max-width: 768px) {
    .main-header__nav {
