@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const PDFDocument = require('pdfkit');
-
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Product = require('../models/product');
 const Order = require('../models/order');
 const product = require('../models/product');
@@ -135,24 +135,49 @@ exports.postCartDeleteProduct = (req, res, next) => {
 };
 
 exports.getCheckout = (req, res, next) => {
-    req.user
-        .populate('cart.items.productId')
-        .then(user => {
-            const products = user.cart.items;
-            let total = 0;
 
-            products.forEach(product => {
-                total += product.quantity * product.productId.price;
+    let products;
+    let total = 0;
+    req.user
+        .populate("cart.items.productId")
+        .then((user) => {
+            console.log(user.cart.items);
+            products = user.cart.items;
+            products.forEach((p) => {
+                total += +p.quantity * +p.productId.price;
             });
 
+            return stripe.checkout.sessions.create({
+                line_items: products.map(p => {
+                    return {
+                        price_data: {
+                            currency: "gbp",
+                            unit_amount: parseInt(Math.ceil(p.productId.price * 100)),
+                            product_data: {
+                                name: p.productId.title,
+                                description: p.productId.description,
+                            },
+                        },
+                        quantity: p.quantity,
+                    }
+                }),
+
+                mode: "payment",
+                success_url: `${req.protocol}://${req.get('host')}/checkout/success`, // => http://localhost:3000/checkoust/success
+                cancel_url: `${req.protocol}://${req.get('host')}/checkout/cancel` // => http://localhost:3000/checkoust/cancel
+            });
+        })
+        .then(stipeSession => {
             res.render('shop/checkout', {
                 path: '/checkout',
                 pageTitle: 'Checkout',
                 products: products,
-                totalSum: total
+                totalSum: total,
+                sessionId: stipeSession.id
             });
         })
         .catch(err => {
+            console.log(err);
             const error = new Error('Get Cart failed.')
             error.httpStatusCode = 500;
             return next(error);
@@ -160,7 +185,7 @@ exports.getCheckout = (req, res, next) => {
 }
 
 
-exports.postOrder = (req, res, next) => {
+exports.getCheckoutSuccess = (req, res, next) => {
     req.user
         .populate('cart.items.productId')
         .then(user => {

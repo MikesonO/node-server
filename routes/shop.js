@@ -20,14 +20,14 @@ router.get('/cart', isAuth, shopController.getCart);
 // Cart Page | /cart => POST
 router.post('/cart', isAuth, shopController.postCart);
 
-// Checkout Page | /checkout => GET
 router.post('/cart-delete-item', isAuth, shopController.postCartDeleteProduct);
 
-// Orders Page | /orders => POST
+// Checkout Page | /checkout => GET
 router.get('/checkout', isAuth, shopController.getCheckout);
 
-// Orders Page | /orders => POST
-router.post('/create-order', isAuth, shopController.postOrder);
+router.get('/checkout/success', isAuth, shopController.getCheckoutSuccess);
+
+router.get('/checkout/cancel', isAuth, shopController.getCheckout);
 
 // Orders Page | /cart => GET
 router.get('/orders', isAuth, shopController.getOrders);
