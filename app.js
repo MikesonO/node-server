@@ -11,6 +11,7 @@ const flash = require('connect-flash');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const helmet = require('helmet');
+const compression = require('compression');
 
 const errorControllers = require('./controllers/errors.js');
 const User = require('./models/user.js');
@@ -53,7 +54,7 @@ const shopRoutes = require('./routes/shop.js');
 const authRoutes = require('./routes/auth.js');
 
 app.use(helmet());
-
+app.use(compression());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
