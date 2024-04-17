@@ -10,6 +10,7 @@ const csurf = require('csurf');
 const flash = require('connect-flash');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
+const helmet = require('helmet');
 
 const errorControllers = require('./controllers/errors.js');
 const User = require('./models/user.js');
@@ -50,6 +51,8 @@ const adminRoutes = require('./routes/admin.js');
 const shopRoutes = require('./routes/shop.js');
 
 const authRoutes = require('./routes/auth.js');
+
+app.use(helmet());
 
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -107,7 +110,7 @@ app.use((error, req, res, next) => {
 
 mongoose.connect(MONGODB_URI)
     .then(result => {
-        app.listen(3000);
+        app.listen(process.env.PORT || 3000);
     })
     .catch(err => {
         console.log(err);
